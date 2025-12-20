@@ -1,4 +1,4 @@
-ORG 0
+ORG 0x7c00
 BITS 16
 
 _start:
@@ -8,55 +8,58 @@ _start:
  times 33 db 0
 
 start:
-    jmp 0x7c0: step2
+    jmp 0: step2
 
 
 step2:
     cli:;Clears Interruptts
-    mov ax, 0x7c0
+    mov ax, 0x00
     mov ds, ax
     mov es,ax
-    mov ax, 0x00
     mov ss, ax
     mov sp, 0x7c00
     sti: ;Enable Interruptts
 
-    mov ah, 2 ;READ SECTOR COMMAND
-    mov al, 1 ;READ SECTOR TO READ
-    mov ch, 0 ;CYLINDER LOW EIGHT BITS
-    mov cl, 2 ;READ SECTOR TWO
-    mov dh, 0 ;HEAD NUMBER
-    mov bx, buffer
-    int 0x13
-    jc error
-
-    mov si, buffer
-    call print
     jmp $
 
-error: 
-    mov si, error_message
-    call print
-    jmp $
+.load_protected:
+    cli
+    lgdt[gdt_descriptor]
+    mov eax, cr0
+    or eax, 0x1
+    mov cr0, eax
 
-print:
-    mov bx, 0
-.loop:
-    lodsb
-    cmp al, 0
-    je .done
-    call print_char
-    jmp .loop
-.done:
-    ret
+;GDT
+gdt_start:
+gdt_null:
+    dd 0x0
+    dd 0x0
 
-print_char:
-    mov ah, 0eh
-    int 0x10
-    ret 
+;offset 0x0
+gdt_code:
+    dw 0xffff
+    dw 0
+    db 0
+    db 0x9a
+    bd 11001111b
+    db 0
+; offset 0x10
+gdt_data:
+    dw 0xffff
+    dw 0
+    db 0
+    db 0x92
+    bd 11001111b
+    db 0
 
-error_message: db 'Failed to Load Sector', 0
+gdt_end:
+
+gdt_descriptor:
+    dw gdt_end - gdt_start - 1
+    dd gdt_start
+
+[BITS 32]
+load 32:
+
 times 510-($-$$) db 0
 dw 0xAA55
-
-buffer:
