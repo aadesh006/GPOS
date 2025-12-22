@@ -1,4 +1,7 @@
 [BITS 32]
+CODE_SEG equ 0x08
+DATA_SEG equ 0x10
+
 load32:
     mov ax, DATA_SEG
     mov ds, ax
