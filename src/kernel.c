@@ -1,6 +1,7 @@
 #include "kernel.h"
 #include <stdint.h>
 #include <stddef.h>
+#include "idt/idt.h"
 
 uint16_t* video_mem = 0;
 uint16_t terminal_row = 0;
@@ -24,7 +25,7 @@ void terminal_writechar(char c, char colour)
         terminal_col = 0;
         return;
     }
-    
+
     terminal_putchar(terminal_col, terminal_row, c, colour);
     terminal_col += 1;
     if(terminal_col >= VGA_WIDTH)
@@ -73,5 +74,7 @@ void kernel_main()
 {
     terminal_intialize();
     print("Hello World!");
+
+    idt_init();
 
 }
