@@ -55,8 +55,7 @@ Follow the [OSDev wiki guide](https://wiki.osdev.org/GCC_Cross-Compiler) to buil
 
 1. Clone the repository:
 ```bash
-git clone <your-repo-url>
-cd <repo-name>
+git clone https://github.com/aadesh006/GPOS.git
 ```
 
 2. Make the build script executable:
