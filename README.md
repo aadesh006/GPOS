@@ -164,4 +164,4 @@ Contributions are welcome! Please feel free to submit issues and pull requests.
 
 ---
 
-**Note**: This is an educational project for learning operating system development. It is not intended for production use.
+**Note**: This is an educational project for learning operating system development.
