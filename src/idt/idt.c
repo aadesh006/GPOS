@@ -33,3 +33,7 @@ void idt_init()
     idt_load(&idtr_descriptor);
 
 }
+
+void isr0_handler(){
+    panic("Divide by Zero");
+}
