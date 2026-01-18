@@ -8,3 +8,11 @@ idt_load:
     lidt [ebx]
     pop ebp
     ret
+    
+isr0:
+    cli
+    pushad
+    call isr0_handler
+    popad
+    sti
+    iret
