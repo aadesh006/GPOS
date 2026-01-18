@@ -24,6 +24,8 @@ A custom 32-bit operating system built from scratch, featuring a bootloader, ker
 │   │   ├── idt.asm        # IDT assembly routines
 │   │   ├── idt.c          # IDT implementation
 │   │   └── idt.h          # IDT headers
+|   ├── isr/
+│   │   ├── isr.asm        # ISR assembly routines
 │   ├── memory/
 │   │   ├── memory.c       # Memory management functions
 │   │   └── memory.h       # Memory headers
