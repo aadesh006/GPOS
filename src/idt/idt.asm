@@ -9,6 +9,11 @@ idt_load:
     pop ebp
     ret
     
+section .asm
+
+global isr0
+extern isr0_handler
+
 isr0:
     cli
     pushad

@@ -69,6 +69,13 @@ void print(const char* str)
     }
 }
 
+void panic(const char* msg)
+{
+    print(msg);
+    while(1) {}
+}
+
+
 
 void kernel_main()
 {
@@ -76,5 +83,11 @@ void kernel_main()
     print("Hello World!");
 
     idt_init();
+    int a = 10;
+    int b = 0;
+    volatile int c = a / b;
+    (void)c;
+
+
 
 }
