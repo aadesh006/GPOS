@@ -124,6 +124,7 @@ The IDT currently supports 512 interrupt vectors with basic handlers. The divide
 - IDT initialization
 - Basic memory operations
 - Terminal I/O functions
+- Programmable Interrupt Controller (PIC)
 
 ### In Progress / Planned
 - File system support
