@@ -2,6 +2,8 @@
 #include "../config.h"
 #include "../memory/memory.h"
 #include "../kernel.h"
+#include "../io/io.h"
+
 
 struct idt_desc idt_descriptors[GPOS_TOTAL_INTERRUPTS];
 struct idtr_desc idtr_descriptor;
@@ -12,6 +14,8 @@ void irq0_handler()
 {
     timer_ticks++;
     outb(0x20, 0x20);
+    print(".");
+
 }
 
 
@@ -42,6 +46,11 @@ void idt_init()
 
     //Load the interrupt
     idt_load(&idtr_descriptor);
+
+    extern void irq0();
+
+    idt_set(0x20, irq0);
+
 
 }
 
