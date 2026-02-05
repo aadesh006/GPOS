@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include "idt/idt.h"
+#include "io/io.h"
 
 uint16_t* video_mem = 0;
 uint16_t terminal_row = 0;
@@ -80,14 +81,18 @@ void panic(const char* msg)
 void kernel_main()
 {
     terminal_intialize();
-    print("Hello World!");
+    print("Hello World\n");
 
     idt_init();
-    int a = 10;
-    int b = 0;
-    volatile int c = a / b;
-    (void)c;
 
+    //Enable only IRQ0 timer
+    outb(0x21, 0xFE);
 
+    //Enable interrupts globally
+    __asm__ volatile ("sti");
 
+    while (1)
+    {
+        __asm__ volatile ("hlt");
+    }
 }

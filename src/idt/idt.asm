@@ -21,3 +21,15 @@ isr0:
     popad
     sti
     iret
+
+global irq0
+extern irq0_handler
+
+irq0:
+    cli
+    pushad
+    call irq0_handler
+    popad
+    sti
+    iret
+

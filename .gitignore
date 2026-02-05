@@ -1,1 +1,31 @@
+# Build output
+bin/
+build/
+
+# Temporary / editor files
+*.o
+*.elf
 *.bin
+*.iso
+*.img
+
+# Debugging
+*.log
+gdb.txt
+core
+core.*
+
+# OS / editor noise
+*~
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# QEMU / emulator leftovers
+qemu.log
+qemu.pid
+
+# macOS / Windows junk
+.DS_Store
+Thumbs.db
