@@ -6,6 +6,15 @@
 struct idt_desc idt_descriptors[GPOS_TOTAL_INTERRUPTS];
 struct idtr_desc idtr_descriptor;
 
+static uint32_t timer_ticks = 0;
+
+void irq0_handler()
+{
+    timer_ticks++;
+    outb(0x20, 0x20);
+}
+
+
 extern void idt_load(struct idtr_desc* ptr);
 void idt_zero()
 {
