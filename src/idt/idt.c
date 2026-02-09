@@ -4,6 +4,7 @@
 #include "../kernel.h"
 #include "../io/io.h"
 #include "../keyboard/scancode.h"
+#include "../keyboard/keyboard.h"
 
 
 
@@ -16,7 +17,7 @@ void irq0_handler()
 {
     timer_ticks++;
     outb(0x20, 0x20);
-    print(".");
+    //print(".");
 
 }
 
@@ -25,20 +26,18 @@ void irq1_handler()
     uint8_t scancode = inb(0x60);
 
     // Ignore key releases
-    if (scancode & 0x80)
+    if (!(scancode & 0x80))
     {
-        outb(0x20, 0x20);
-        return;
-    }
-
-    char c = scancode_to_ascii[scancode];
-    if (c)
-    {
-        terminal_writechar(c, 5);
+        char c = scancode_to_ascii[scancode];
+        if (c)
+        {
+            keyboard_push(c);
+        }
     }
 
     outb(0x20, 0x20); // EOI
 }
+
 
 
 

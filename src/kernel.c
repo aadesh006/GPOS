@@ -3,6 +3,8 @@
 #include <stddef.h>
 #include "idt/idt.h"
 #include "io/io.h"
+#include "keyboard/scancode.h"
+#include "keyboard/keyboard.h"
 
 uint16_t* video_mem = 0;
 uint16_t terminal_row = 0;
@@ -91,8 +93,18 @@ void kernel_main()
     //Enable interrupts globally
     __asm__ volatile ("sti");
 
-    while (1)
+    keyboard_init();
+
+while (1)
+{
+    if (keyboard_has_char())
+    {
+        char c = keyboard_pop();
+        terminal_writechar(c, 5);
+    }
+    else
     {
         __asm__ volatile ("hlt");
     }
+}
 }

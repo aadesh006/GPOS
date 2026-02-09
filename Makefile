@@ -1,4 +1,10 @@
-FILES = ./build/kernel.asm.o ./build/kernel.o ./build/idt/idt.asm.o ./build/idt/idt.o ./build/memory/memory.o
+FILES = ./build/kernel.asm.o \
+        ./build/kernel.o \
+        ./build/idt/idt.asm.o \
+        ./build/idt/idt.o \
+        ./build/memory/memory.o \
+        ./build/keyboard/keyboard.o
+
 INCLUDES = -I./src
 FLAGS = -g -ffreestanding -falign-jumps -falign-functions -falign-labels -falign-loops -fstrength-reduce -fomit-frame-pointer -finline-functions -Wno-unused-function -fno-builtin -Werror -Wno-unused-label -Wno-cpp -Wno-unused-parameter -nostdlib -nostartfiles -nodefaultlibs -Wall -O0 -Iinc
 
@@ -32,6 +38,11 @@ all: ./bin/boot.bin ./bin/kernel.bin
 ./build/memory/memory.o: ./src/memory/memory.c
 	mkdir -p ./build/memory
 	i686-elf-gcc $(INCLUDES) -I ./src/memory $(FLAGS) -std=gnu99 -c ./src/memory/memory.c -o ./build/memory/memory.o
+
+./build/keyboard/keyboard.o: ./src/keyboard/keyboard.c
+	mkdir -p ./build/keyboard
+	i686-elf-gcc $(INCLUDES) -I ./src/keyboard $(FLAGS) -std=gnu99 -c ./src/keyboard/keyboard.c -o ./build/keyboard/keyboard.o
+
 
 clean:
 	rm -rf ./bin/*
