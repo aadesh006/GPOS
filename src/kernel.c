@@ -81,7 +81,7 @@ void panic(const char* msg)
 void kernel_main()
 {
     terminal_intialize();
-    print("Hello World\n");
+    print("Hello World Welcome to GPOS\n");
 
     idt_init();
 

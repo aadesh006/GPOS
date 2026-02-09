@@ -23,15 +23,23 @@ void irq0_handler()
 void irq1_handler()
 {
     uint8_t scancode = inb(0x60);
-    print("Keyboard Interrupt");
-    (void)scancode; // Avoid unused variable warning
 
-    // Temporary: print scancode as a dot
-    print("#");
+    // Ignore key releases
+    if (scancode & 0x80)
+    {
+        outb(0x20, 0x20);
+        return;
+    }
 
-    // Send EOI to PIC
-    outb(0x20, 0x20);
+    char c = scancode_to_ascii[scancode];
+    if (c)
+    {
+        terminal_writechar(c, 5);
+    }
+
+    outb(0x20, 0x20); // EOI
 }
+
 
 
 
