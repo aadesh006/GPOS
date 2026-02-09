@@ -3,6 +3,8 @@
 #include <stddef.h>
 #include "idt/idt.h"
 #include "io/io.h"
+#include "keyboard/scancode.h"
+#include "keyboard/keyboard.h"
 
 uint16_t* video_mem = 0;
 uint16_t terminal_row = 0;
