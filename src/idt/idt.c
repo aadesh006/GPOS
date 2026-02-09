@@ -3,6 +3,8 @@
 #include "../memory/memory.h"
 #include "../kernel.h"
 #include "../io/io.h"
+#include "../keyboard/scancode.h"
+
 
 
 struct idt_desc idt_descriptors[GPOS_TOTAL_INTERRUPTS];
