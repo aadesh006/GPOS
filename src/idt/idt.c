@@ -18,6 +18,20 @@ void irq0_handler()
 
 }
 
+void irq1_handler()
+{
+    uint8_t scancode = inb(0x60);
+    print("Keyboard Interrupt");
+    (void)scancode; // Avoid unused variable warning
+
+    // Temporary: print scancode as a dot
+    print("#");
+
+    // Send EOI to PIC
+    outb(0x20, 0x20);
+}
+
+
 
 extern void idt_load(struct idtr_desc* ptr);
 void idt_zero()
@@ -48,9 +62,10 @@ void idt_init()
     idt_load(&idtr_descriptor);
 
     extern void irq0();
-
     idt_set(0x20, irq0);
 
+    extern void irq1();
+    idt_set(0x21, irq1);
 
 }
 
