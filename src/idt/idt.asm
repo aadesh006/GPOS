@@ -33,3 +33,14 @@ irq0:
     sti
     iret
 
+global irq1
+extern irq1_handler
+
+irq1:
+    cli
+    pushad
+    call irq1_handler
+    popad
+    sti
+    iret
+
