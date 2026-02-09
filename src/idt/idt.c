@@ -17,7 +17,7 @@ void irq0_handler()
 {
     timer_ticks++;
     outb(0x20, 0x20);
-    print(".");
+    //print(".");
 
 }
 
