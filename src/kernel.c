@@ -85,8 +85,8 @@ void kernel_main()
 
     idt_init();
 
-    //Enable only IRQ0 timer
-    outb(0x21, 0xFE);
+    //Enable IRQ0 + IRQ1 (timer + keyboard)
+    outb(0x21, 0xFC);
 
     //Enable interrupts globally
     __asm__ volatile ("sti");
