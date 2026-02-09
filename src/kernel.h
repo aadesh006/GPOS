@@ -9,5 +9,6 @@ void print(const char* str);
 void panic(const char* msg);
 
 void terminal_writechar(char c, char colour);
+void terminal_backspace();
 
 #endif

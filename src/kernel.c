@@ -1,10 +1,13 @@
 #include "kernel.h"
 #include <stdint.h>
 #include <stddef.h>
+
 #include "idt/idt.h"
 #include "io/io.h"
-#include "keyboard/scancode.h"
 #include "keyboard/keyboard.h"
+#include "terminal/line.h"
+#include "shell/shell.h"
+#include "terminal/terminal.h"
 
 uint16_t* video_mem = 0;
 uint16_t terminal_row = 0;
@@ -12,99 +15,130 @@ uint16_t terminal_col = 0;
 
 uint16_t terminal_make_char(char c, char colour)
 {
-    return (colour << 8) | c;
+    return (colour << 8) | (uint8_t)c;
 }
 
-void terminal_putchar( int x, int y, char c, char colour)
+void terminal_putchar(int x, int y, char c, char colour)
 {
-    video_mem[(y*VGA_WIDTH) + x] = terminal_make_char(c, colour);
+    video_mem[(y * VGA_WIDTH) + x] = terminal_make_char(c, colour);
 }
 
 void terminal_writechar(char c, char colour)
 {
     if (c == '\n')
     {
-        terminal_row += 1;
+        terminal_row++;
         terminal_col = 0;
         return;
     }
 
     terminal_putchar(terminal_col, terminal_row, c, colour);
-    terminal_col += 1;
-    if(terminal_col >= VGA_WIDTH)
+    terminal_col++;
+
+    if (terminal_col >= VGA_WIDTH)
     {
         terminal_col = 0;
-        terminal_row += 1;
+        terminal_row++;
     }
 }
 
 void terminal_intialize()
 {
-    video_mem = (uint16_t*)(0xB8000);
-    terminal_col =0;
+    video_mem = (uint16_t*)0xB8000;
     terminal_row = 0;
-    for (int y =0; y < VGA_HEIGHT; y++)
+    terminal_col = 0;
+
+    for (int y = 0; y < VGA_HEIGHT; y++)
     {
-        for(int x = 0; x<VGA_WIDTH; x++)
+        for (int x = 0; x < VGA_WIDTH; x++)
         {
-            video_mem[(y*VGA_WIDTH) + x] = terminal_make_char(' ', 0);
+            terminal_putchar(x, y, ' ', 0);
         }
-        
     }
+}
+
+void terminal_backspace()
+{
+    if (terminal_col == 0)
+        return;
+
+    terminal_col--;
+    terminal_putchar(terminal_col, terminal_row, ' ', 5);
 }
 
 size_t strlen(const char* str)
 {
     size_t len = 0;
-    while(str[len])
-    {
-        len ++;
-    }
+    while (str[len])
+        len++;
     return len;
 }
 
 void print(const char* str)
 {
-    size_t len = strlen(str);
-    for(int i =0; i<len; i++)
-    {
+    for (size_t i = 0; i < strlen(str); i++)
         terminal_writechar(str[i], 5);
-    }
 }
 
 void panic(const char* msg)
 {
+    terminal_intialize();
+    print("KERNEL PANIC\n");
     print(msg);
-    while(1) {}
+
+    while (1)
+        __asm__ volatile ("hlt");
 }
 
-
+//KERNEL ENTRY POINT
 
 void kernel_main()
 {
     terminal_intialize();
-    print("Hello World Welcome to GPOS\n");
+    print("Hello World! Welcome to GPOS\n");
 
     idt_init();
 
-    //Enable IRQ0 + IRQ1 (timer + keyboard)
+    // Enable IRQ0 (timer) + IRQ1 (keyboard)
     outb(0x21, 0xFC);
 
-    //Enable interrupts globally
+    // Enable CPU interrupts
     __asm__ volatile ("sti");
 
-    keyboard_init();
 
-while (1)
-{
-    if (keyboard_has_char())
+    keyboard_init();
+    line_reset();
+
+    print("> ");
+
+//Main Kernel Loop
+
+    while (1)
     {
-        char c = keyboard_pop();
-        terminal_writechar(c, 5);
+        if (keyboard_has_char())
+        {
+            char c = keyboard_pop();
+
+            if (c == '\b')
+            {
+                terminal_backspace();
+                line_feed(c);
+                continue;
+            }
+
+            terminal_writechar(c, 5);
+
+            if (line_feed(c))
+            {
+                terminal_writechar('\n', 5);
+                shell_execute(line_get());
+                line_reset();
+                print("> ");
+            }
+        }
+        else
+        {
+            __asm__ volatile ("hlt");
+        }
     }
-    else
-    {
-        __asm__ volatile ("hlt");
-    }
-}
 }
