@@ -8,6 +8,7 @@
 #include "terminal/line.h"
 #include "shell/shell.h"
 #include "terminal/terminal.h"
+#include "terminal/vga.h"
 
 uint16_t* video_mem = 0;
 uint16_t terminal_row = 0;
@@ -63,7 +64,7 @@ void terminal_backspace()
         return;
 
     terminal_col--;
-    terminal_putchar(terminal_col, terminal_row, ' ', 5);
+    terminal_putchar(terminal_col, terminal_row, ' ', VGA_LIGHT_GREEN);
 }
 
 size_t strlen(const char* str)
@@ -77,7 +78,7 @@ size_t strlen(const char* str)
 void print(const char* str)
 {
     for (size_t i = 0; i < strlen(str); i++)
-        terminal_writechar(str[i], 5);
+        terminal_writechar(str[i], VGA_LIGHT_GREEN);
 }
 
 void panic(const char* msg)
@@ -126,11 +127,11 @@ void kernel_main()
                 continue;
             }
 
-            terminal_writechar(c, 5);
+            terminal_writechar(c, VGA_LIGHT_GREEN);
 
             if (line_feed(c))
             {
-                terminal_writechar('\n', 5);
+                terminal_writechar('\n', VGA_LIGHT_GREEN);
                 shell_execute(line_get());
                 line_reset();
                 print("> ");
